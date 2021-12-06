@@ -49,15 +49,19 @@ public class AdminController {
     }
 
     @PostMapping("")
-    public String addUser(@ModelAttribute("newUser") User user, @RequestParam("roleId") Long[] roleId) {
-        user.getRoleSet().addAll( Arrays.stream(roleId).map(id->roleService.getRoleById(id)).collect(Collectors.toSet()) );
+    public String addUser(@ModelAttribute("newUser") User user, @RequestParam(value = "roleId" , required = false) Long[] roleId) {
+        if(roleId!=null){
+            user.getRoleSet().addAll(Arrays.stream(roleId).map(id->roleService.getRoleById(id)).collect(Collectors.toSet()));
+        }
         userService.addUser(user);
         return "redirect:./admin";
     }
 
     @PostMapping("editUser/{id}")
-    public String editUser(@ModelAttribute("user") User user, @RequestParam("roleId") Long[] roleId) {
-        user.getRoleSet().addAll(Arrays.stream(roleId).map(id->roleService.getRoleById(id)).collect(Collectors.toSet()));
+    public String editUser(@ModelAttribute("user") User user, @RequestParam(value = "roleId" , required = false) Long[] roleId) {
+        if(roleId!=null){
+            user.getRoleSet().addAll(Arrays.stream(roleId).map(id->roleService.getRoleById(id)).collect(Collectors.toSet()));
+        }
         userService.updateUser(user);
         return "redirect:..";
     }
